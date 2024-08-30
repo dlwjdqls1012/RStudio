@@ -113,3 +113,34 @@ y=c(TRUE, TRUE, FALSE, FALSE)
 x | y
 x & y
 xor(x, y)
+
+# NA(Not Available(결측치): 누락된 경우)
+# NULL(변수를 선언하고 초기화하지 않았을 때)
+# INF(Infinity: 0이 아닌 숫자를 0으로 나누었을 때)
+# NaN(Not a Number: 0을 0으로 나누었을 때)
+
+z = NULL
+z
+
+is.null(z)
+
+k
+is.null(k) # k를 초기화하지 않음, 값을 넣지 않을 때는 NULL을 대입해야함
+
+y = c(1, 2, 3, NA, 5)
+y
+
+z = 5/0
+z
+
+t = 0/0
+t
+
+# 요인(factor)
+# 벡터에 저장된 동일한 값들을 요인으로 찾아내서 대표값들만 분류해서 반환 + 기존 벡터값도 함께 반환 
+
+gender = c("여", "남", "남", "여", "여", "남")
+gender
+
+gender.factor = factor(gender)
+gender.factor
