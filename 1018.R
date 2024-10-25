@@ -1,5 +1,7 @@
 install.packages("leaflet")
 library(leaflet)
+library(dplyr)
+library(ggplot2)
 
 # leaflet 객체 보여지는 지도의 설정과 오픈스트리트 맵 재단에서 제공하는 지도타일 추가
 m = leaflet() %>%
@@ -91,14 +93,14 @@ ggplot(data = df_map) +
 install.packages("openxlsx")
 library(openxlsx)
 
-df = read.xlsx("D:/ljb/R_Data/국내지진목록.xlsx")
+df = read.xlsx("D:/ljb/R_Data/국내지진목록.xlsx", sheet=1, startRow=4, colNames=FALSE)
 head(df)
 
 idx = grep("^북한", df$X8)
 
 df[idx, 'X8']
 
-df=df[-idx]
+df=df[-idx,]
 
 df[, 6] = gsub("N", "", df[,6])
 df[, 7] = gsub("E", "", df[,7])
@@ -106,4 +108,21 @@ df[, 7] = gsub("E", "", df[,7])
 df[,6] = as.numeric(df[,6])
 df[,7] = as.numeric(df[,7])
 
-df[,6]
+# shapefile  읽어오기
+map = st_read("D:/ljb/R_Data/Z_NGII_N3A_G0010000.shp")
+
+#WGS84 좌표계로 변환
+map = st_transform(map, crs=4326)
+
+#포인트 데이터를 sf 객체로 변환
+df_sf = df%>%st_as_sf(coords = c("X7", "X6"), crs = 4326)
+
+df
+
+# 행정경계지도 출력
+
+ggplot() +
+  geom_sf(data=map, fill="white", alpha=0.5, color="black")+
+  geom_sf(data=df_sf, aes(size=X3), shape=21, fill="red", alpha=0.3, color="black")+
+  theme(legend.position="none")+
+  labs(title="지진분포", x="경도", y="위도")
